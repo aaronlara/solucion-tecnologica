@@ -1,0 +1,6 @@
+#repositorio: https://artifacthub.io/packages/helm/jupyterhub/jupyterhub
+# depliegue de Jupyterhub con los parametros por defecto
+helm upgrade --install jupyterhub jupyterhub/jupyterhub --version 3.2.2  -n mi_namespace
+
+# actualización del despligue con los parametros adicionales
+helm upgrade --install jupyterhub jupyterhub/jupyterhub --version 3.2.2  -n mi_namespace -f jupyterhub-keycloak.yaml

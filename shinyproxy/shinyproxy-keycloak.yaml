@@ -1,0 +1,53 @@
+proxy:
+  authentication: "openid"
+  logo-url: "https://url_a_mi_logotipo.com/img/logo.png"
+  openid:
+    auth-url: "http://url_de_mi_servidor.com/realms/master/protocol/openid-connect/auth" #url de keycloak
+    client-id: "shinyproxy"
+    client-secret: "i7hrrscwshY1slsGFORsrfG5sfsffOp" #proporcionado por keycloak
+    jwks-url: "http://url_de_mi_servidor.com/realms/master/protocol/openid-connect/certs"
+    roles-claim: "realm_roles"
+    token-url: "http://url_de_mi_servidor.com/realms/master/protocol/openid-connect/token"
+    username-attribute: "preferred_username"
+  specs:
+    - container-env:
+        DISABLE_AUTH: true
+        USER: "#{proxy.userId}"
+        WWW_ROOT_PATH: "#{proxy.getRuntimeValue('SHINYPROXY_PUBLIC_PATH')}"
+      container-image: "openanalytics/shinyproxy-rstudio-ide-demo:2021.09.2_382__4.1.2"
+      container-volumes:
+        - "/tmp/#{proxy.userId}:/home/#{proxy.userId}"
+      id: "RStudio"
+      port: 8787
+    - container-cmd:
+        - "start-notebook.sh"
+        - "--NotebookApp.token=''"
+        - "--NotebookApp.base_url=#{proxy.getRuntimeValue('SHINYPROXY_PUBLIC_PA\
+          TH')}"
+      container-env:
+        JUPYTER_ENABLE_LAB: true
+      container-image: "openanalytics/shinyproxy-juypter-datascience"
+      container-volumes:
+        - "/tmp/jupyter/#{proxy.userId}/work:/home/jovyan/work"
+      display-name: "Jupyter Notebook Lab"
+      id: "jupyterlab"
+      port: 8888
+      target-path: "#{proxy.getRuntimeValue('SHINYPROXY_PUBLIC_PATH')}"
+      websocket-reconnection-mode: "None"
+    - container-cmd:
+        - "R"
+        - "-e"
+        - "shinyproxy::run_01_hello()"
+      container-image: "openanalytics/shinyproxy-demo"
+      container-network: "sp-example-net"
+      display-name: "Hello Application"
+      id: "01_hello"
+    - container-cmd:
+        - "R"
+        - "-e"
+        - "shinyproxy::run_06_tabsets()"
+      container-image: "openanalytics/shinyproxy-demo"
+      container-network: "sp-example-net"
+      display-name: "Demo"
+      id: "06_tabsets"
+  title: "Open Analytics Shiny Proxy"

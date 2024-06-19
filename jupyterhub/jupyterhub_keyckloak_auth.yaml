@@ -1,0 +1,58 @@
+# previamente se debe de tener el servicio de autenticación con keycloak, crear un cliente_id, obtener el client_secret
+# autenticacion con keycloak
+hub:
+  #  baseUrl: /jupyter
+  config:
+    Authenticator:
+      enable_auth_state: true
+    GenericOAuthenticator:
+      client_id: jupyter  # se nombre en keycloak
+      client_secret: JSisiaosiiis993a9s99s9s9ss9 # keycloak
+      oauth_callback_url: https://mi_url_a_jupyter.mx/hub/oauth_callback
+      authorize_url: https://mi_url_a_keycloak.mx/realms/MC/protocol/openid-connect/auth
+      token_url: https://mi_url_a_keycloak.mx/realms/MC/protocol/openid-connect/token
+      userdata_url: https://mi_url_a_keycloak.mx/realms/MC/protocol/openid-connect/userinfo
+      login_service: keycloak
+      username_key: preferred_username
+      scope:
+        - openid
+        - profile
+      tls_verify: false
+      userdata_params:
+        state: state
+      allowed_groups:
+        - user
+        - todos
+      admin_groups:
+        - admin
+    JupyterHub:
+      authenticator_class: generic-oauth
+# es posibe agregar versiones adicionales como la que integra R Studio, VSCode y Spark
+# contenedores adicionales
+singleuser:
+  image:
+    name: jupyter/scipy-notebook
+    tag: latest
+  profileList:
+    - display_name: "JupyterLab environment"
+      description: "To avoid too much bells and whistles: Python."
+      default: true
+    - display_name: "RStudio"
+      description: "RStudio interface."
+      kubespawner_override:
+        image: wesleyburr/trent-rstudio:20230826
+    - display_name: "VSCODE"
+      kubespawner_override:
+        image: jkbghp367/jupyterhub-with-vscode:0.0.1
+    - display_name: "TensorFlor environment"
+      description: "ML with TensorFlow."
+      kubespawner_override:
+        image: jupyter/tensorflow-notebook:latest
+    - display_name: "PySpark environment"
+      description: "The Jupyter PySpark spark image!"
+      kubespawner_override:
+        image: jupyter/pyspark-notebook:latest
+    - display_name: "Spark environment"
+      description: "The Jupyter Stacks spark image!"
+      kubespawner_override:
+        image: jupyter/all-spark-notebook:latest
