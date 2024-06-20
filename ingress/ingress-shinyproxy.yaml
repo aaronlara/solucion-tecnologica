@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: shinyproxy-ingress
+  namespace: kc
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: shinyproxy.midominio.mx
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: shinyproxy
+            port:
+              number: 8080
+
