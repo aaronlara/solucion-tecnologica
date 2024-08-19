@@ -1,4 +1,4 @@
-# solucion_tecnologica
+# Solución Tecnológica
 Este proyecto forma parte del trabajo de tesis: Solución tecnológica para el desarrollo de productos de datos en la Universidad de Sonora.
 
 La propuesta consiste en la integración de aplicaciones de software libre, utilizando microservicios y contenedores, administrada por Kubernetes, con el fin de implementar una plataforma para
